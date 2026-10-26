@@ -22,3 +22,18 @@ Hasil pengujian divisualisasikan melalui **Web View** interaktif berbasis Flask 
 Pastikan GCC dan OpenMP sudah terinstall. Jalankan:
 ```bash
 make
+Cara Menjalankan (via Terminal)
+1.Siapkan gambar input:
+python input/buat_gambar.py
+
+Jalankan program C:
+./serial.exe
+./pthreads.exe
+./openmp.exe
+
+Cara Menjalankan (via Web View)
+Install dependensi Python:
+pip install flask pillow
+Jalankan server:
+python app.py
+Buka browser ke http://127.0.0.1:5000.
