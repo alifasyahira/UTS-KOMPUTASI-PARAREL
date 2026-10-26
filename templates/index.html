@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Hasil UTS: Image Convolution</title>
+    <style>
+        /* =========================================
+           COQUETTE AESTHETIC STYLESHEET (INLINE)
+           ========================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Quicksand:wght@400;600&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #fdf1f5;
+            background-image: radial-gradient(#f8d4e1 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #5a3a45;
+            font-family: 'Quicksand', sans-serif;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #ffffff;
+            border: 2px dashed #f4a7c1;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(244, 167, 193, 0.15);
+            position: relative;
+        }
+
+        header::before {
+            content: "🎀";
+            font-size: 2rem;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 0 10px;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            color: #d14b7c;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        header p { font-size: 1.1rem; color: #9e6b7b; font-style: italic; }
+
+        .upload-section {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #fff0f5;
+            border-radius: 15px;
+            display: inline-block;
+            border: 2px solid #f8d4e1;
+        }
+
+        .upload-section input[type="file"] { margin-bottom: 15px; color: #d14b7c; }
+        
+        .upload-section button {
+            background-color: #d14b7c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(209, 75, 124, 0.2);
+        }
+
+        .upload-section button:hover {
+            background-color: #b33a65;
+            transform: translateY(-2px);
+        }
+
+        .image-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+
+        .card {
+            flex: 1 1 300px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(209, 75, 124, 0.1);
+            text-align: center;
+            border: 1px solid #f8d4e1;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #d14b7c;
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: 4px solid #fdf1f5;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            object-fit: cover;
+        }
+
+        .stats-section {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(244, 167, 193, 0.15);
+            border: 2px dashed #f4a7c1;
+        }
+
+        .stats-section h2 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: #d14b7c;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: #fffafc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #f8d4e1;
+            font-size: 1.05rem;
+        }
+
+        th { background-color: #f4a7c1; color: white; font-weight: 600; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #fff0f5; }
+
+        /* Teks Speedup jadi pink manis */
+        td[style*="font-weight"] { color: #d14b7c !important; }
+
+        /* Teks belum ada gambar */
+        div[style*="text-align: center"] h3 {
+            font-family: 'Playfair Display', serif;
+            color: #d14b7c;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gaussian Blur 5x5 - Image Convolution</h1>
+            <p>Perbandingan Hasil dan Performa (Serial vs OpenMP)</p>
+            
+            <!-- FORM UPLOAD -->
+            <div class="upload-section">
+                <form action="/" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="foto" accept="image/*" required>
+                    <button type="submit">Upload & Kirim ke C</button>
+                </form>
+                <p style="font-size: 12px; color: #9e6b7b; margin-top: 10px;">
+                    *Setelah upload, jalankan <code>./serial.exe</code> & <code>./openmp.exe</code> di terminal, lalu klik Refresh.
+                </p>
+            </div>
+        </header>
+
+        <!-- TAMPILKAN GAMBAR JIKA SUDAH ADA HASILNYA -->
+        {% if has_result %}
+        <div class="image-section">
+            <div class="card">
+                <h2>Gambar Asli</h2>
+                <img src="input.png" alt="Gambar Asli">
+            </div>
+            <div class="card">
+                <h2>Hasil Serial (C)</h2>
+                <img src="serial.png" alt="Hasil Serial">
+            </div>
+            <div class="card">
+                <h2>Hasil OpenMP (C)</h2>
+                <img src="openmp.png" alt="Hasil OpenMP">
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2>Perbandingan Waktu Eksekusi</h2>
+            <table>
+                <thead><tr><th>Metode</th><th>Waktu (Detik)</th><th>Speedup</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>Serial (1 Thread)</td>
+                        <td>0.906</td>
+                        <td>1.00x</td>
+                    </tr>
+                    <tr>
+                        <td>OpenMP (Paralel)</td>
+                        <td>0.469</td>
+                        <td style="font-weight: bold;">1.93x lebih cepat</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 50px; color: #888;">
+            <h3>Belum ada gambar yang diproses.</h3>
+            <p>Silakan upload foto di atas, lalu jalankan program C.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

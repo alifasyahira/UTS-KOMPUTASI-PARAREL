@@ -1,0 +1,11 @@
+// Angka waktu dari hasil terminal
+const waktuSerial = 0.906; 
+const waktuOpenMP = 0.469; 
+
+// Update teks ke tabel HTML
+document.getElementById('time-serial').innerText = waktuSerial.toFixed(3);
+document.getElementById('time-openmp').innerText = waktuOpenMP.toFixed(3);
+
+// Hitung Speedup
+const speedup = waktuSerial / waktuOpenMP;
+document.getElementById('speedup').innerText = speedup.toFixed(2) + 'x lebih cepat';
